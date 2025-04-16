@@ -751,12 +751,13 @@ public class PlayerActivity extends Activity {
     @Override
     public void onStop() {
         super.onStop();
-        alive = false;
-        if (Build.VERSION.SDK_INT >= 31) {
-            playerView.removeCallbacks(barsHider);
-        }
-        playerView.setCustomErrorMessage(null);
-        releasePlayer(false);
+        // 释放资源放在finish中进行
+//        alive = false;
+//        if (Build.VERSION.SDK_INT >= 31) {
+//            playerView.removeCallbacks(barsHider);
+//        }
+//        playerView.setCustomErrorMessage(null);
+//        releasePlayer(false);
     }
 
     @Override
@@ -788,6 +789,9 @@ public class PlayerActivity extends Activity {
             setResult(Activity.RESULT_OK, intent);
         }
 
+        // 在finish中释放资源
+        // 不能在上述向调用者返回结果前调用，因为当jellyfin等服务端检测连接中断，会认为播放异常停止，不会接收处理后续的返回结果
+        releasePlayer(false);
         super.finish();
     }
 
@@ -1398,6 +1402,16 @@ public class PlayerActivity extends Activity {
     }
 
     public void releasePlayer(boolean save) {
+        alive = false;
+        if (Build.VERSION.SDK_INT >= 31) {
+            playerView.removeCallbacks(barsHider);
+        }
+        playerView.setCustomErrorMessage(null);
+
+        if(mReceiver != null) {
+            unregisterReceiver(mReceiver);
+        }
+
         if (save) {
             savePlayer();
         }
