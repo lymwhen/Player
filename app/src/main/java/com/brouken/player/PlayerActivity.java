@@ -109,6 +109,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class PlayerActivity extends Activity {
@@ -1261,7 +1262,7 @@ public class PlayerActivity extends Activity {
 
         if (player.canAdvertiseSession()) {
             try {
-                mediaSession = new MediaSession.Builder(this, player).build();
+                mediaSession = new MediaSession.Builder(this, player).setId(UUID.randomUUID().toString()).build();
             } catch (IllegalStateException e) {
                 e.printStackTrace();
             }
