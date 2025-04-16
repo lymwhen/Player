@@ -266,10 +266,27 @@ class SubtitleUtils {
     }
 
     public static MediaItem.SubtitleConfiguration buildSubtitle(Context context, Uri uri, String subtitleName, boolean selected) {
+        return buildSubtitle(context, uri, subtitleName, selected, null);
+    }
+
+    /**
+     * 构建外部字幕
+     * @param context
+     * @param uri
+     * @param subtitleName
+     * @param selected
+     * @param defaultLanguage 当无法自动获取字幕语言时，设为默认字幕
+     * @return
+     */
+    public static MediaItem.SubtitleConfiguration buildSubtitle(Context context, Uri uri, String subtitleName, boolean selected, String defaultLanguage) {
         final String subtitleMime = SubtitleUtils.getSubtitleMime(uri);
-        final String subtitleLanguage = SubtitleUtils.getSubtitleLanguage(uri);
+        String subtitleLanguage = SubtitleUtils.getSubtitleLanguage(uri);
         if (subtitleLanguage == null && subtitleName == null)
             subtitleName = Utils.getFileName(context, uri);
+
+        if (subtitleLanguage == null || subtitleLanguage.isEmpty()) {
+            subtitleLanguage = defaultLanguage;
+        }
 
         MediaItem.SubtitleConfiguration.Builder subtitleConfigurationBuilder = new MediaItem.SubtitleConfiguration.Builder(uri)
                 .setMimeType(subtitleMime)

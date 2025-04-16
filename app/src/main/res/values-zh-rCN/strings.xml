@@ -46,10 +46,12 @@
     <string name="pref_dangerous_header">危险 ⚠️</string>
     <string name="pref_dangerous_warning">切换此类别中的选项可能会破坏正常兼容内容的播放</string>
     <string name="pref_language_audio">默认音轨</string>
+    <string name="pref_language_subtitle">默认字幕</string>
     <string name="pref_language_track_device">设备语言</string>
     <string name="pref_language_track_default">默认</string>
     <string name="pref_map_dv7">杜比视界配置文件 7 后备</string>
     <string name="pref_map_dv7_on">在 HDR 显示器上播放杜比视界配置 7 内容</string>
+    <string name="pref_subtitle_use_captioning">使用系统字幕配置</string>
     <string name="pref_subtitle_style_embedded">字幕嵌入样式</string>
     <string name="pref_subtitle_style_embedded_on">应用嵌入字幕样式</string>
     <string name="pref_subtitle_style_embedded_off">不应用嵌入字幕样式</string>

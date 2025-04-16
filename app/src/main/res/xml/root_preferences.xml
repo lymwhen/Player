@@ -48,6 +48,12 @@
 
     <PreferenceCategory app:title="@string/pref_subtitle_header">
 
+        <ListPreference
+            app:key="languageSubtitle"
+            android:defaultValue="zho"
+            app:title="@string/pref_language_subtitle"
+            app:useSimpleSummaryProvider="true" />
+
         <SwitchPreferenceCompat
             app:key="subtitleStyleEmbedded"
             app:defaultValue="true"
@@ -61,6 +67,11 @@
             android:summaryOn="@string/pref_subtitle_style_bold_on"
             android:summaryOff="@string/pref_subtitle_style_bold_off"
             app:title="@string/pref_subtitle_style_bold" />
+
+        <SwitchPreferenceCompat
+            app:key="subtitleUseCaptioning"
+            app:defaultValue="false"
+            app:title="@string/pref_subtitle_use_captioning" />
 
         <Preference
             app:title="@string/pref_captioning_preferences">

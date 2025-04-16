@@ -118,6 +118,13 @@ public class SettingsActivity extends AppCompatActivity {
                 listPreferenceLanguageAudio.setEntries(entries.values().toArray(new String[0]));
                 listPreferenceLanguageAudio.setEntryValues(entries.keySet().toArray(new String[0]));
             }
+
+            ListPreference listPreferenceLanguageSubtitle = findPreference("languageSubtitle");
+            if (listPreferenceLanguageSubtitle != null) {
+                LinkedHashMap<String, String> entries = new LinkedHashMap<>(getLanguages());
+                listPreferenceLanguageSubtitle.setEntries(entries.values().toArray(new String[0]));
+                listPreferenceLanguageSubtitle.setEntryValues(entries.keySet().toArray(new String[0]));
+            }
         }
 
         @Override

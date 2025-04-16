@@ -299,7 +299,7 @@ public class PlayerActivity extends Activity {
                             if (subsName != null && subsName.length > i) {
                                 name = subsName[i];
                             }
-                            apiSubs.add(SubtitleUtils.buildSubtitle(this, sub, name, sub.equals(defaultSub)));
+                            apiSubs.add(SubtitleUtils.buildSubtitle(this, sub, name, sub.equals(defaultSub), mPrefs.languageSubtitle));
                         }
                     }
                 }
@@ -1208,18 +1208,30 @@ public class PlayerActivity extends Activity {
                         .setPreferredAudioLanguages(mPrefs.languageAudio)
                 );
         }
-        final CaptioningManager captioningManager = (CaptioningManager) getSystemService(Context.CAPTIONING_SERVICE);
-        if (!captioningManager.isEnabled()) {
+
+        if (mPrefs.subtitleUseCaptioning) {
+            // 根据系统字幕设置配置字幕选择器
+            final CaptioningManager captioningManager = (CaptioningManager) getSystemService(Context.CAPTIONING_SERVICE);
+            if (!captioningManager.isEnabled()) {
+                trackSelector.setParameters(trackSelector.buildUponParameters()
+                        .setIgnoredTextSelectionFlags(C.SELECTION_FLAG_DEFAULT)
+                );
+            }
+            Locale locale = captioningManager.getLocale();
+            if (locale != null) {
+                trackSelector.setParameters(trackSelector.buildUponParameters()
+                        .setPreferredTextLanguage(locale.getISO3Language())
+                );
+            }
+        } else {
+            // 根据字幕语言设置配置字幕选择器
             trackSelector.setParameters(trackSelector.buildUponParameters()
-                    .setIgnoredTextSelectionFlags(C.SELECTION_FLAG_DEFAULT)
+                    .setPreferredTextLanguage(mPrefs.languageSubtitle)
+//                    .setAllowVideoMixedMimeTypeAdaptiveness(true)
+                    .setRendererDisabled(C.TRACK_TYPE_TEXT, false)
             );
         }
-        Locale locale = captioningManager.getLocale();
-        if (locale != null) {
-            trackSelector.setParameters(trackSelector.buildUponParameters()
-                    .setPreferredTextLanguage(locale.getISO3Language())
-            );
-        }
+
         // https://github.com/google/ExoPlayer/issues/8571
         DefaultExtractorsFactory extractorsFactory = new DefaultExtractorsFactory()
                 .setTsExtractorFlags(DefaultTsPayloadReaderFactory.FLAG_ENABLE_HDMV_DTS_AUDIO_STREAMS)
@@ -1965,16 +1977,28 @@ public class PlayerActivity extends Activity {
         final boolean isTablet = Utils.isTablet(context);
         subtitlesScale = SubtitleUtils.normalizeFontScale(captioningManager.getFontScale(), isTvBox || isTablet);
         if (subtitleView != null) {
-            final CaptioningManager.CaptionStyle userStyle = captioningManager.getUserStyle();
-            final CaptionStyleCompat userStyleCompat = CaptionStyleCompat.createFromCaptionStyle(userStyle);
-            final CaptionStyleCompat captionStyle = new CaptionStyleCompat(
-                    userStyle.hasForegroundColor() ? userStyleCompat.foregroundColor : Color.WHITE,
-                    userStyle.hasBackgroundColor() ? userStyleCompat.backgroundColor : Color.TRANSPARENT,
-                    userStyle.hasWindowColor() ? userStyleCompat.windowColor : Color.TRANSPARENT,
-                    userStyle.hasEdgeType() ? userStyleCompat.edgeType : CaptionStyleCompat.EDGE_TYPE_OUTLINE,
-                    userStyle.hasEdgeColor() ? userStyleCompat.edgeColor : Color.BLACK,
-                    Typeface.create(userStyleCompat.typeface != null ? userStyleCompat.typeface : Typeface.DEFAULT,
-                            mPrefs.subtitleStyleBold ? Typeface.BOLD : Typeface.NORMAL));
+            final CaptionStyleCompat captionStyle;
+            if (mPrefs.subtitleUseCaptioning) {
+                final CaptioningManager.CaptionStyle userStyle = captioningManager.getUserStyle();
+                final CaptionStyleCompat userStyleCompat = CaptionStyleCompat.createFromCaptionStyle(userStyle);
+                captionStyle = new CaptionStyleCompat(
+                        userStyle.hasForegroundColor() ? userStyleCompat.foregroundColor : Color.WHITE,
+                        userStyle.hasBackgroundColor() ? userStyleCompat.backgroundColor : Color.TRANSPARENT,
+                        userStyle.hasWindowColor() ? userStyleCompat.windowColor : Color.TRANSPARENT,
+                        userStyle.hasEdgeType() ? userStyleCompat.edgeType : CaptionStyleCompat.EDGE_TYPE_OUTLINE,
+                        userStyle.hasEdgeColor() ? userStyleCompat.edgeColor : Color.BLACK,
+                        Typeface.create(userStyleCompat.typeface != null ? userStyleCompat.typeface : Typeface.DEFAULT,
+                                mPrefs.subtitleStyleBold ? Typeface.BOLD : Typeface.NORMAL));
+            } else {
+                captionStyle = new CaptionStyleCompat(
+                        Color.WHITE,
+                        Color.TRANSPARENT,
+                        Color.TRANSPARENT,
+                        CaptionStyleCompat.EDGE_TYPE_OUTLINE,
+                        Color.BLACK,
+                        Typeface.create(Typeface.DEFAULT,
+                                mPrefs.subtitleStyleBold ? Typeface.BOLD : Typeface.NORMAL));
+            }
             subtitleView.setStyle(captionStyle);
             subtitleView.setApplyEmbeddedStyles(mPrefs.subtitleStyleEmbedded);
             subtitleView.setBottomPaddingFraction(SubtitleView.DEFAULT_BOTTOM_PADDING_FRACTION * 2f / 3f);

@@ -45,8 +45,11 @@ class Prefs {
     private static final String PREF_KEY_DECODER_PRIORITY = "decoderPriority";
     private static final String PREF_KEY_MAP_DV7 = "mapDV7ToHevc";
     private static final String PREF_KEY_LANGUAGE_AUDIO = "languageAudio";
+    private static final String PREF_KEY_LANGUAGE_SUBTITLE = "languageSubtitle";
+    private static final String PREF_KEY_SUBTITLE_USE_CAPTIONING = "subtitleUseCaptioning";
     private static final String PREF_KEY_SUBTITLE_STYLE_EMBEDDED = "subtitleStyleEmbedded";
     private static final String PREF_KEY_SUBTITLE_STYLE_BOLD = "subtitleStyleBold";
+
 
     public static final String TRACK_DEFAULT = "default";
     public static final String TRACK_DEVICE = "device";
@@ -79,6 +82,8 @@ class Prefs {
     public int decoderPriority = DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON;
     public boolean mapDV7ToHevc = false;
     public String languageAudio = TRACK_DEVICE;
+    public String languageSubtitle;
+    public boolean subtitleUseCaptioning = false;
     public boolean subtitleStyleEmbedded = true;
     public boolean subtitleStyleBold = false;
 
@@ -128,6 +133,8 @@ class Prefs {
         decoderPriority = Integer.parseInt(mSharedPreferences.getString(PREF_KEY_DECODER_PRIORITY, String.valueOf(decoderPriority)));
         mapDV7ToHevc = mSharedPreferences.getBoolean(PREF_KEY_MAP_DV7, mapDV7ToHevc);
         languageAudio = mSharedPreferences.getString(PREF_KEY_LANGUAGE_AUDIO, languageAudio);
+        languageSubtitle = mSharedPreferences.getString(PREF_KEY_LANGUAGE_SUBTITLE, "");
+        subtitleUseCaptioning = mSharedPreferences.getBoolean(PREF_KEY_SUBTITLE_USE_CAPTIONING, subtitleUseCaptioning);
         subtitleStyleEmbedded = mSharedPreferences.getBoolean(PREF_KEY_SUBTITLE_STYLE_EMBEDDED, subtitleStyleEmbedded);
         subtitleStyleBold = mSharedPreferences.getBoolean(PREF_KEY_SUBTITLE_STYLE_BOLD, subtitleStyleBold);
     }
