@@ -617,8 +617,15 @@ public class PlayerActivity extends Activity {
         final HorizontalScrollView horizontalScrollView = (HorizontalScrollView) getLayoutInflater().inflate(R.layout.controls, null);
         final LinearLayout controls = horizontalScrollView.findViewById(R.id.controls);
 
-        controls.addView(buttonOpen);
+        final ImageButton exoPlaybackSpeed = exoBasicControls.findViewById(R.id.exo_playback_speed);
+        final ImageButton exoAudioTrack = exoBasicControls.findViewById(R.id.exo_audio_track);
+        exoBasicControls.removeView(exoPlaybackSpeed);
+        exoBasicControls.removeView(exoAudioTrack);
+
+        controls.addView(exoPlaybackSpeed);
         controls.addView(exoSubtitle);
+        controls.addView(exoAudioTrack);
+        controls.addView(buttonOpen);
         controls.addView(buttonAspectRatio);
         if (Utils.isPiPSupported(this) && buttonPiP != null) {
             controls.addView(buttonPiP);
