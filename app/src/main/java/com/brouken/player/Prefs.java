@@ -143,7 +143,7 @@ class Prefs {
         mediaUri = uri;
         mediaType = type;
         updateSubtitle(null);
-        updateMeta(null, null, AspectRatioFrameLayout.RESIZE_MODE_FIT, 1.f, 1.f);
+        updateMeta(null, null, AspectRatioFrameLayout.RESIZE_MODE_FIT, 1.f, this.speed);
 
         if (mediaType != null && mediaType.endsWith("/*")) {
             mediaType = null;
@@ -318,5 +318,12 @@ class Prefs {
 
     public void setPersistent(boolean persistentMode) {
         this.persistentMode = persistentMode;
+    }
+
+    public void updateSpeed(final float speed) {
+        this.speed = speed;
+        final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
+            sharedPreferencesEditor.putFloat(PREF_KEY_SPEED, speed);
+        sharedPreferencesEditor.apply();
     }
 }

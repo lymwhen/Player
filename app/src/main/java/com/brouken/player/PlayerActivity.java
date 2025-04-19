@@ -70,6 +70,7 @@ import androidx.media3.common.MediaItem;
 import androidx.media3.common.MediaMetadata;
 import androidx.media3.common.MimeTypes;
 import androidx.media3.common.PlaybackException;
+import androidx.media3.common.PlaybackParameters;
 import androidx.media3.common.Player;
 import androidx.media3.common.TrackGroup;
 import androidx.media3.common.TrackSelectionOverride;
@@ -163,6 +164,7 @@ public class PlayerActivity extends Activity {
     private ImageButton buttonRotation;
     private ImageButton exoSettings;
     private ImageButton exoPlayPause;
+    private TextView exoPlaybackSpeedText;
     private ProgressBar loadingProgressBar;
     private PlayerControlView controlView;
     private CustomDefaultTimeBar timeBar;
@@ -617,7 +619,8 @@ public class PlayerActivity extends Activity {
         final HorizontalScrollView horizontalScrollView = (HorizontalScrollView) getLayoutInflater().inflate(R.layout.controls, null);
         final LinearLayout controls = horizontalScrollView.findViewById(R.id.controls);
 
-        final ImageButton exoPlaybackSpeed = exoBasicControls.findViewById(R.id.exo_playback_speed);
+        final View exoPlaybackSpeed = exoBasicControls.findViewById(R.id.exo_playback_speed);
+        exoPlaybackSpeedText = exoPlaybackSpeed.findViewById(R.id.exo_playback_speed_text);
         final ImageButton exoAudioTrack = exoBasicControls.findViewById(R.id.exo_audio_track);
         exoBasicControls.removeView(exoPlaybackSpeed);
         exoBasicControls.removeView(exoAudioTrack);
@@ -1386,6 +1389,10 @@ public class PlayerActivity extends Activity {
             playerView.showController();
         }
 
+        // 设置倍速
+        player.setPlaybackParameters(player.getPlaybackParameters().withSpeed(mPrefs.speed));
+        exoPlaybackSpeedText.setText(Float.toString(mPrefs.speed));
+
         player.addListener(playerListener);
         player.prepare();
 
@@ -1436,6 +1443,8 @@ public class PlayerActivity extends Activity {
         }
 
         if (player != null) {
+            // 记住回放倍速
+            mPrefs.updateSpeed(player.getPlaybackParameters().speed);
             notifyAudioSessionUpdate(false);
 
 //            mediaSession.setActive(false);
@@ -1624,6 +1633,15 @@ public class PlayerActivity extends Activity {
                 } else {
                     errorToShow = exoPlaybackException;
                 }
+            }
+        }
+
+        @Override
+        public void onPlaybackParametersChanged(@NonNull PlaybackParameters playbackParameters) {
+            Player.Listener.super.onPlaybackParametersChanged(playbackParameters);
+
+            if(exoPlaybackSpeedText != null) {
+                exoPlaybackSpeedText.setText(Float.toString(playbackParameters.speed));
             }
         }
     }

@@ -53,8 +53,39 @@
       <ImageButton android:id="@+id/exo_repeat_toggle"
           style="@style/ExoStyledControls.Button.Bottom.RepeatToggle"/>
 
-      <ImageButton android:id="@+id/exo_playback_speed"
-          style="@style/ExoStyledControls.Button.Bottom.PlaybackSpeed"/>
+      <LinearLayout
+          android:id="@+id/exo_playback_speed"
+          android:layout_width="wrap_content"
+          android:layout_height="48dp"
+          android:paddingHorizontal="14dp"
+          android:orientation="horizontal"
+          android:gravity="center_vertical"
+          android:clickable="true"
+          android:focusable="true"
+          android:background="?android:attr/selectableItemBackground">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:contentDescription="@string/exo_controls_playback_speed"
+            android:layout_marginEnd="4dp"
+            android:src="@drawable/exo_styled_controls_speed" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="x"
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/exo_playback_speed_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
+
+      </LinearLayout>
 
       <ImageButton android:id="@+id/exo_audio_track"
           style="@style/ExoStyledControls.Button.Bottom.AudioTrack"/>
