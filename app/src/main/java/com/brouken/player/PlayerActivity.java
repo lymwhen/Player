@@ -601,11 +601,10 @@ public class PlayerActivity extends Activity {
         exoBasicControls.removeView(exoRepeat);
         //exoBasicControls.setVisibility(View.GONE);
 
-        exoSettings.setOnLongClickListener(view -> {
+        exoSettings.setOnClickListener(view -> {
             //askForScope(false, false);
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivityForResult(intent, REQUEST_SETTINGS);
-            return true;
         });
 
         exoSubtitle.setOnLongClickListener(v -> {
