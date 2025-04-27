@@ -37,6 +37,7 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.Rational;
 import android.util.TypedValue;
 import android.view.InputDevice;
@@ -123,7 +124,10 @@ public class PlayerActivity extends Activity {
     public static LoudnessEnhancer loudnessEnhancer;
 
     public CustomPlayerView playerView;
-    public static ExoPlayer player;
+    public static volatile ExoPlayer player;
+    // 播放器与当前实例标记，在onStop中当两者标记相同时，会释放资源，否则不做处理，以免影响jellyfin中连播
+    public static volatile String curPlayerTag;
+    public String curInsTag;
     private YouTubeOverlay youTubeOverlay;
 
     private Object mPictureInPictureParamsBuilder;
@@ -767,6 +771,13 @@ public class PlayerActivity extends Activity {
 //        }
 //        playerView.setCustomErrorMessage(null);
 //        releasePlayer(false);
+
+        // 判断player是否是由当前实例创建的，如果是则结束，如果不是，则不做处理
+        if(curInsTag != null) {
+            if(curInsTag.equals(curPlayerTag)) {
+                releasePlayer();
+            }
+        }
     }
 
     @Override
@@ -1267,6 +1278,8 @@ public class PlayerActivity extends Activity {
         }
 
         player = playerBuilder.build();
+        curInsTag = UUID.randomUUID().toString();
+        curPlayerTag = curInsTag;
 
         AudioAttributes audioAttributes = new AudioAttributes.Builder()
                 .setUsage(C.USAGE_MEDIA)
